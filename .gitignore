@@ -1,0 +1,16 @@
+node_modules
+dist
+build
+.env
+.env.local
+.DS_Store
+.vscode
+coverage
+__pycache__
+*.py[cod]
+*.pyo
+.pytest_cache
+.venv
+venv
+env
+.cursor
