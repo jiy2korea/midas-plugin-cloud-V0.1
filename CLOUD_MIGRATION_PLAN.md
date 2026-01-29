@@ -168,10 +168,10 @@ Midas Plugin Cloud V0.1/
 
 | 단계 | 작업 | 체크 |
 |------|------|------|
-| 1.1 | `backend/` 디렉터리 및 FastAPI/Flask 프로젝트 생성 | ☐ |
-| 1.2 | `public/py_library.py`, `py_main.py`, `py_config.py` → `backend/library/` 이동 | ☐ |
-| 1.3 | API 엔드포인트 구현: `/api/calculate`, `/api/beam-info`, `/api/health` | ☐ |
-| 1.4 | 입력/출력 스키마 및 에러 처리, CORS 설정 | ☐ |
+| 1.1 | `backend/` 디렉터리 및 FastAPI/Flask 프로젝트 생성 | ☑ |
+| 1.2 | `public/py_library.py`, `py_main.py`, `py_config.py` → `backend/library/` 이동 | ☑ |
+| 1.3 | API 엔드포인트 구현: `/api/calculate`, `/api/beam-info`, `/api/health` | ☑ |
+| 1.4 | 입력/출력 스키마 및 에러 처리, CORS 설정 | ☑ |
 
 *`py_base.py`, `py_base_sub.py`는 백엔드로 이전하지 않음. `py_config.json`은 Pyscript 전용이므로 Cloud에서 사용 안 함(제거).*
 
@@ -179,18 +179,18 @@ Midas Plugin Cloud V0.1/
 
 | 단계 | 작업 | 체크 |
 |------|------|------|
-| 2.1 | `src/api/client.ts`, `endpoints.ts` API 클라이언트 구현 | ☐ |
-| 2.2 | `App.tsx`에서 Pyscript 호출 제거 후 API 호출로 교체 | ☐ |
-| 2.3 | `public/index.html`에서 Pyscript·`py-config`(py_config.json) 제거, `utils_pyscript.ts` → `utils_api.ts` 대체 | ☐ |
-| 2.4 | `package.json` Pyscript 관련 의존성 제거, HTTP 클라이언트(axios 등) 추가 | ☐ |
+| 2.1 | `src/api/client.ts`, `endpoints.ts` API 클라이언트 구현 | ☑ |
+| 2.2 | `App.tsx`에서 Pyscript 호출 제거 후 API 호출로 교체 | ☑ |
+| 2.3 | `public/index.html`에서 Pyscript·`py-config`(py_config.json) 제거, `utils_pyscript.ts` → `utils_api.ts` 대체 | ☑ |
+| 2.4 | `package.json` Pyscript 관련 의존성 제거, HTTP 클라이언트(axios 등) 추가 | ☑ |
 
 ### Phase 3: 통합 테스트 및 정리 (약 1주)
 
 | 단계 | 작업 | 체크 |
 |------|------|------|
-| 3.1 | 백엔드 단독 실행 및 API 테스트 | ☐ |
-| 3.2 | 프론트엔드–백엔드 연동 및 기존 기능 회귀 테스트 | ☐ |
-| 3.3 | API 문서(Swagger/OpenAPI), README·개발 가이드 정리 | ☐ |
+| 3.1 | 백엔드 단독 실행 및 API 테스트 | ☑ |
+| 3.2 | 프론트엔드–백엔드 연동 및 기존 기능 회귀 테스트 | ☑ |
+| 3.3 | API 문서(Swagger/OpenAPI), README·개발 가이드 정리 | ☑ |
 
 ---
 

@@ -12,6 +12,10 @@ BESTO 합성보 설계 도구의 **Cloud 버전**입니다.
 - **프론트·백엔드 분리**: React ↔ REST API ↔ FastAPI 구조
 - **로컬/배포**: 백엔드(uvicorn)와 프론트(npm start)를 각각 실행하여 연동
 
+### 현재 상태
+- **Phase 1~3 완료**: 백엔드 구축, 프론트 API 전환, Pyscript 제거, 통합 테스트·문서 정리까지 반영된 상태입니다.
+- 상세 진행 내역은 [CLOUD_MIGRATION_DEVLOG.md](./CLOUD_MIGRATION_DEVLOG.md), 단계별 계획은 [CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md](./CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md)를 참조하세요.
+
 ### 기술 스택
 | 구분 | 기술 |
 |------|------|
@@ -192,6 +196,7 @@ SampleComponents·DevTools 등에서 `utils_pyscript`를 사용하는 부분은 
 - [CLOUD_MIGRATION_PLAN.md](./CLOUD_MIGRATION_PLAN.md) — 마이그레이션 상위 계획
 - [CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md](./CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md) — 단계별 개발 계획 (Phase 1~3)
 - [CLOUD_MIGRATION_DEVLOG.md](./CLOUD_MIGRATION_DEVLOG.md) — 개발 일지
+- [CLOUD_MIGRATION_SKILLS.md](./CLOUD_MIGRATION_SKILLS.md) — 계획 수행 시 Cursor Agent 스킬 추천
 - [docs/REGRESSION_TEST_CHECKLIST.md](./docs/REGRESSION_TEST_CHECKLIST.md) — 프론트·백 연동 회귀 테스트 체크리스트
 
 ---
