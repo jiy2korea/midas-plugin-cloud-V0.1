@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 logger = logging.getLogger(__name__)
 
+from app.api.schemas import CalculateRequest
 from library.py_main import get_beam_info as lib_get_beam_info
 from library.py_main import get_neighbor_h_beams
 from library.py_main import calculate_design_strength
@@ -43,7 +44,7 @@ def get_beam_neighbors(selected_member: str = Query(..., description="선택된 
 
 
 @router.post("/calculate", summary="설계강도 계산")
-def post_calculate(body: dict):
+def post_calculate(body: CalculateRequest):
     """
     설계강도 계산. Body = 기존 pythonInput 동일 JSON.
     누락 필드는 get_default_design_inputs()로 보완 후 계산.
@@ -51,7 +52,7 @@ def post_calculate(body: dict):
     """
     try:
         config = get_default_design_inputs()
-        config.update(body)
+        config.update(body.model_dump(exclude_unset=True))
         raw = calculate_design_strength(config)
         result = json.loads(raw)
         if "error" in result and len(result) == 1:

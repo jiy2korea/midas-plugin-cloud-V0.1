@@ -11,6 +11,26 @@
 | 구현 계획 | [CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md](./CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md) |
 | 상위 계획 | [CLOUD_MIGRATION_PLAN.md](./CLOUD_MIGRATION_PLAN.md) |
 | 스킬 추천 | [CLOUD_MIGRATION_SKILLS.md](./CLOUD_MIGRATION_SKILLS.md) |
+| 코드 리뷰 | [docs/CODE_REVIEW_REPORT.md](./docs/CODE_REVIEW_REPORT.md) |
+
+---
+
+## 2025-01-29 (코드 리뷰 권장 사항 반영)
+
+### 코드 리뷰 후속 작업
+
+[CODE_REVIEW_REPORT.md](./docs/CODE_REVIEW_REPORT.md) 권장 조치 중 **높음** 2건 및 **App.tsx** 1건 반영.
+
+| # | 항목 | 변경 내용 |
+|---|------|----------|
+| 1 | POST /api/calculate | `body: dict` → `body: CalculateRequest`로 변경. Pydantic 검증 적용. `config.update(body.model_dump(exclude_unset=True))` 사용. |
+| 2 | Wrapper.tsx | ValidationComponent 기본값 `'undefiend'` → `'undefined'` 오타 수정. |
+| 3 | App.tsx + types | `DetailResult`에 `parsedInputs` 타입 추가 (`ParsedInputs`, `ParsedInputsHSection`, `ParsedInputsUSection`). App.tsx에서 `(data as any).parsedInputs` 제거, `data.parsedInputs` 사용. |
+
+**검증**
+
+- `cd backend && pytest` → 9 passed.
+- 린트: App.tsx, types/index.ts, Wrapper.tsx 이상 없음.
 
 ---
 

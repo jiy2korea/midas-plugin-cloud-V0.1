@@ -70,6 +70,26 @@ export interface VibrationResult {
     accelerationLimit?: number;
 }
 
+/** DesignDialog 초기값용. API 계산 결과에 포함되는 파싱된 입력( H/U 단면 치수 ). */
+export interface ParsedInputsHSection {
+    height: number;
+    width: number;
+    webThickness: number;
+    flangeThickness: number;
+    bracketLength?: number;
+}
+
+export interface ParsedInputsUSection {
+    height: number;
+    width: number;
+    thickness: number;
+}
+
+export interface ParsedInputs {
+    hSection: ParsedInputsHSection;
+    uSection: ParsedInputsUSection;
+}
+
 export interface SectionInfo {
     uArea?: number;
     hArea?: number;
@@ -117,6 +137,8 @@ export interface DetailResult {
     materialInfo?: any; // Define structure if needed
     checkResult?: { [key: string]: boolean };
     error?: string;
+    /** API 계산 결과에 포함되는 파싱된 입력 (H/U 단면 치수). DesignDialog 초기값에 사용. */
+    parsedInputs?: ParsedInputs;
 }
 
 export interface DesignInputs {

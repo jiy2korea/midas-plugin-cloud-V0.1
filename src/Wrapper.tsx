@@ -36,7 +36,7 @@ const ValidWrapper = (props: { isApiReady?: boolean }) => {
 	const { i18n } = useTranslation();
 
 	const ValidationComponent = ({
-		title = 'undefiend',
+		title = 'undefined',
 		checkIf = false,
 		strValid = 'Valid',
 		strInvalid = 'Invalid',

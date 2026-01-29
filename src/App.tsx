@@ -231,9 +231,8 @@ const App = () => {
     if (selectedSectionIndex !== null) {
       const data = detailedResults.get(selectedSectionIndex);
       if (data?.sectionInfo) {
-        // H형강 치수 추출 (단면 이름에서 파싱하거나 result에서 가져옴)
-        // 현재 result.sectionInfo에는 hArea 등은 있지만 상세 치수(H, B 등)는 parsedInputs에 있음
-        const pi = (data as any).parsedInputs;
+        // H형강 치수 추출: 상세 치수(H, B 등)는 parsedInputs에 있음
+        const pi = data.parsedInputs;
         if (pi) {
           return {
             h_height: String(pi.hSection.height),
