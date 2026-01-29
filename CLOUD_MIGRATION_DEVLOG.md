@@ -149,10 +149,11 @@
 
 ---
 
-### 다음 작업 (예정)
+### 다음 작업 (당시 예정)
 
 1. **Phase 3**  
-   - 3.1 백엔드 pytest → 3.2 프론트·백엔드 연동 회귀 테스트 → 3.3 API 문서·README 정리.
+   - 3.1 백엔드 pytest → 3.2 프론트·백엔드 연동 회귀 테스트 → 3.3 API 문서·README 정리.  
+   → **2025-01-29에 Phase 3 완료.** (아래 섹션 참조)
 
 ---
 
@@ -206,9 +207,61 @@
 ② HTTP 클라이언트: fetch 사용, 추가 패키지 없음.  
 ③ `.env.development` 추가: `REACT_APP_API_URL=http://localhost:8000`.
 
-**산출물:** `.env.development`.
-
 **검증:** 린트 통과. 로컬에서 `npm install` 후 `npm run build` 또는 `npm start`로 기동·API 연동 확인. (빌드 검증은 환경에 따라 `node_modules`/캐시 필요.)
+
+---
+
+## 2025-01-29 (Phase 3 완료)
+
+### 3.1 백엔드 단독 테스트 ✅
+
+**목표:** API 단위·통합 테스트로 동작 및 스키마 검증.
+
+**작업 내용**
+
+| # | 내용 | 산출물 |
+|---|------|--------|
+| 1 | pytest 설정 | `backend/pytest.ini`, `backend/tests/` (conftest.py, test_api.py) |
+| 2 | 의존성 | `requirements.txt`에 pytest, httpx 추가 |
+| 3 | TestClient로 /api/health, /api/beam-info, /api/beam-neighbors, /api/calculate 정상·엣지 케이스 | `tests/test_api.py` (9개 테스트) |
+
+**검증:** `cd backend && pytest` → **9 passed**, exit 0.
+
+---
+
+### 3.2 프론트·백엔드 연동 회귀 테스트 ✅
+
+**목표:** 백엔드(8000)·프론트(3000) 동시 실행 시 BESTO 플로우 전 구간 수동 회귀.
+
+**산출물:** [docs/REGRESSION_TEST_CHECKLIST.md](./docs/REGRESSION_TEST_CHECKLIST.md) — 로딩/API 연동, Search, Design, 에러·경계 체크리스트 및 1.2/1.3, 4.1/4.2 확인 방법 정리.
+
+**검증:** 사용자 확인으로 체크리스트 전체(1.1~1.3, 2.1~2.3, 3.1~3.2, 4.1~4.2) 통과, 이상 없음.
+
+---
+
+### 3.3 API 문서·README 정리 ✅
+
+**작업:** FastAPI 라우트에 `tags`, `summary` 추가 (/docs 가독성). README에 Phase 3·백엔드 pytest·회귀 체크리스트 링크·테스트 안내 반영. 참조 문서에 REGRESSION_TEST_CHECKLIST 링크 추가.
+
+**산출물:** 수정된 `backend/app/api/routes.py`, `README.md`, `CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md` Phase 3 체크리스트 완료 표시.
+
+---
+
+### Design 플로우 버그 수정 (compositeSection)
+
+**현상:** 부재 선택 후 Design에서 U단면 높이에 비정형 값(예: 777) 입력 후 완료 시 `Error: 'compositeSection'`, 백엔드 422.
+
+**원인:** `py_library.py`의 `CompositeSectionMomentStrength_positive`가 `widthThicknessRatio`가 비-Compact일 때 `properties['compositeSection']`를 참조하는데, `py_main.py` 호출 시 해당 인자를 넘기지 않음.
+
+**수정:** `backend/library/py_main.py`에서 `CompositeSectionMomentStrength_positive` 호출 시 **`compositeSection=composite_section`** 인자 추가. (public/py_main.py에도 동일 수정 반영.)
+
+---
+
+### Phase 3 체크리스트 (완료)
+
+- [x] 3.1 backend pytest 추가 및 pytest 통과
+- [x] 3.2 프론트·백엔드 연동 회귀 테스트 체크리스트 작성 및 전체 항목 통과 확인
+- [x] 3.3 API 문서(/docs) 및 README·개발 가이드 정리
 
 ---
 
@@ -237,6 +290,8 @@ backend/
 │   ├── py_library.py
 │   ├── py_config.py
 │   └── py_main.py
+├── tests/              # pytest (test_api.py, conftest.py)
+├── pytest.ini
 └── requirements.txt
 
 src/
@@ -251,4 +306,4 @@ src/
 
 ---
 
-*이 일지는 CLOUD_MIGRATION_IMPLEMENTATION_PLAN 기준 Phase 1(1.1~1.4) 및 Phase 2(2.1~2.4) 완료 시점까지를 반영합니다.*
+*이 일지는 CLOUD_MIGRATION_IMPLEMENTATION_PLAN 기준 Phase 1~3 완료 및 회귀 테스트 통과, Design compositeSection 버그 수정까지를 반영합니다.*

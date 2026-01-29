@@ -624,7 +624,8 @@ def _run_design_calculation(config):
         compressiveFlanges=(U_wing1, U_wing2),
         webs=(U_web1, U_web2),
         tensionRebarStrength=bot_rebar_qty * bot_rebar_area * f_yr,
-        widthThicknessRatio=[Comp_web_WT.check(), Comp_web_WT.check()]
+        widthThicknessRatio=[Comp_web_WT.check(), Comp_web_WT.check()],
+        compositeSection=composite_section
     )
     Comp_design_M_positive = DesignMomentStrength(Comp_nominal_M_positive)
     Comp_moment_check_positive = StrengthCheck(Comp_design_M_positive, Comp_required_M_positive)

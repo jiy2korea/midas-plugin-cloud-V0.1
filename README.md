@@ -39,6 +39,10 @@ Midas Plugin Cloud V0.1/
 │   │   ├── py_library.py
 │   │   ├── py_config.py
 │   │   └── py_main.py
+│   ├── tests/                  # API 단위·통합 테스트 (pytest)
+│   │   ├── conftest.py
+│   │   └── test_api.py
+│   ├── pytest.ini
 │   └── requirements.txt
 │
 ├── public/
@@ -59,6 +63,8 @@ Midas Plugin Cloud V0.1/
 │   ├── Wrapper.tsx             # GET /api/health 성공 시 로딩 숨김, API 검증
 │   └── index.tsx
 │
+├── docs/
+│   └── REGRESSION_TEST_CHECKLIST.md  # 프론트·백 연동 회귀 테스트 체크리스트
 ├── .env.development            # REACT_APP_API_URL=http://localhost:8000
 ├── package.json
 ├── CLOUD_MIGRATION_PLAN.md     # 마이그레이션 상위 계획
@@ -86,8 +92,15 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-- API 문서: http://localhost:8000/docs  
+- API 문서: http://localhost:8000/docs (Swagger), http://localhost:8000/redoc (ReDoc)  
 - Health: http://localhost:8000/api/health  
+
+**백엔드 단독 테스트 (pytest):**
+```bash
+cd backend
+pip install -r requirements.txt
+pytest
+```
 
 ### 2. 프론트엔드 실행 (터미널 2)
 
@@ -130,6 +143,13 @@ npm start
 
 ---
 
+## 🧪 테스트 및 회귀 검증
+
+- **백엔드 API 테스트**: `cd backend && pytest` — `/api/health`, `/api/beam-info`, `/api/beam-neighbors`, `/api/calculate` 정상·엣지 케이스 검증.
+- **프론트·백 연동 회귀**: 백엔드(8000)와 프론트(3000) 동시 실행 후 [docs/REGRESSION_TEST_CHECKLIST.md](./docs/REGRESSION_TEST_CHECKLIST.md) 체크리스트대로 Search → Design → 에러 시나리오 수행.
+
+---
+
 ## 📊 Cloud V0.1 주요 변경 사항
 
 ### Phase 1 (백엔드)
@@ -144,6 +164,11 @@ npm start
 - 로딩: React 마운트 후 GET /api/health 성공 시 로딩 화면 숨김
 - Wrapper: "pyscript" 검사 → "API" 검사 (isApiReady = GET /api/health 200 여부)
 - `.env.development`에 REACT_APP_API_URL 추가
+
+### Phase 3 (테스트·문서)
+- 백엔드 pytest 추가 (`backend/tests/`, `pytest.ini`), `cd backend && pytest` 통과
+- 프론트·백 연동 회귀 테스트 체크리스트: [docs/REGRESSION_TEST_CHECKLIST.md](./docs/REGRESSION_TEST_CHECKLIST.md)
+- API 문서: FastAPI 기본 `/docs`, `/redoc` 활용, README에 Quick Start·테스트 안내 정리
 
 ### 비목표 (현재 버전)
 - API 인증/멀티테넌트
@@ -167,6 +192,7 @@ SampleComponents·DevTools 등에서 `utils_pyscript`를 사용하는 부분은 
 - [CLOUD_MIGRATION_PLAN.md](./CLOUD_MIGRATION_PLAN.md) — 마이그레이션 상위 계획
 - [CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md](./CLOUD_MIGRATION_IMPLEMENTATION_PLAN.md) — 단계별 개발 계획 (Phase 1~3)
 - [CLOUD_MIGRATION_DEVLOG.md](./CLOUD_MIGRATION_DEVLOG.md) — 개발 일지
+- [docs/REGRESSION_TEST_CHECKLIST.md](./docs/REGRESSION_TEST_CHECKLIST.md) — 프론트·백 연동 회귀 테스트 체크리스트
 
 ---
 

@@ -190,9 +190,9 @@
 
 ### Phase 3 체크리스트
 
-- [ ] 3.1 `backend` pytest 추가 및 `pytest` 통과
-- [ ] 3.2 프론트·백엔드 연동 회귀 테스트 완료
-- [ ] 3.3 API 문서(`/docs`) 및 README·개발 가이드 정리
+- [x] 3.1 `backend` pytest 추가 및 `pytest` 통과
+- [x] 3.2 프론트·백엔드 연동 회귀 테스트 체크리스트 작성 (`docs/REGRESSION_TEST_CHECKLIST.md`)
+- [x] 3.3 API 문서(`/docs`) 및 README·개발 가이드 정리
 
 ---
 
