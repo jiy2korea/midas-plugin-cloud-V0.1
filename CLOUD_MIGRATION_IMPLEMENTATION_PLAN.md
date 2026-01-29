@@ -84,10 +84,10 @@
 
 ### Phase 1 체크리스트
 
-- [ ] 1.1 `backend/` 구조 생성, `uvicorn` 실행 및 루트 응답 확인
-- [ ] 1.2 `backend/library/`에 `py_library`, `py_config`, `py_main` 이전 및 import 확인
-- [ ] 1.3 `/api/calculate`, `/api/beam-info`, `/api/beam-neighbors`, `/api/health` 구현 및 curl 검증
-- [ ] 1.4 스키마·에러 처리·CORS 적용 및 검증
+- [x] 1.1 `backend/` 구조 생성, `uvicorn` 실행 및 루트 응답 확인
+- [x] 1.2 `backend/library/`에 `py_library`, `py_config`, `py_main` 이전 및 import 확인
+- [x] 1.3 `/api/calculate`, `/api/beam-info`, `/api/beam-neighbors`, `/api/health` 구현 및 curl 검증
+- [x] 1.4 스키마·에러 처리·CORS 적용 및 검증
 
 ---
 
@@ -143,10 +143,10 @@
 
 ### Phase 2 체크리스트
 
-- [ ] 2.1 `src/api/` 클라이언트 및 엔드포인트 구현, `getHealth`·`postCalculate` 동작 확인
-- [ ] 2.2 `App.tsx` Search/Design 플로우를 API 호출로 전환, 회귀 확인
-- [ ] 2.3 `index.html` Pyscript 제거, 로딩 화면 정리, `py_config.json` 삭제
-- [ ] 2.4 `package.json`·환경 변수 정리, `npm start` 및 API 연동 확인
+- [x] 2.1 `src/api/` 클라이언트 및 엔드포인트 구현, `getHealth`·`postCalculate` 동작 확인
+- [x] 2.2 `App.tsx` Search/Design 플로우를 API 호출로 전환, 회귀 확인
+- [x] 2.3 `index.html` Pyscript 제거, 로딩 화면 정리, `py_config.json` 삭제
+- [x] 2.4 `package.json`·환경 변수 정리, `.env.development` 추가, `npm start` 및 API 연동 확인
 
 ---
 

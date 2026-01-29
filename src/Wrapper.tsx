@@ -1,14 +1,10 @@
-
 /**
 * @title 2-wrapper
-* @description Wrapper for Pyscript
+* @description Wrapper: API readiness (GET /api/health) gates app; validation shows API status.
 * @next ./src/App.tsx
-* ┬┌┐┌   ┌─┐┌─┐┌┬┐┬┬  ┬┌─┐
-* ││││───├─┤│   │ │└┐┌┘├┤ 	🌑🌑🌑🌑🌑
-* ┴┘└┘   ┴ ┴└─┘ ┴ ┴ └┘ └─┘
 */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 import {
@@ -26,19 +22,17 @@ import {
 } from 'notistack';
 import { isDevServerListening } from './DevTools/ServerListening';
 import DevKit from './DevTools/Kit';
-
+import { getHealth } from './api/endpoints';
 import { useTranslation } from "react-i18next";
-
 import InnerContentSize from './InnerContentSize';
 
-const ValidWrapper = (props: any) => {
-	const { isIntalledPyscript } = props;
+const ValidWrapper = (props: { isApiReady?: boolean }) => {
+	const { isApiReady = false } = props;
 
-	const [isInitialized,] = React.useState(true);
-	const [isValid,] = React.useState(true);
-	const [checkUri,] = React.useState(false);
-	const [checkMapiKey,] = React.useState(false);
-	const [checkMapiKeyMsg,] = React.useState("");
+	const [isInitialized] = React.useState(true);
+	const [checkUri] = React.useState(false);
+	const [checkMapiKey] = React.useState(false);
+	const [checkMapiKeyMsg] = React.useState("");
 	const { i18n } = useTranslation();
 
 	const ValidationComponent = ({
@@ -68,11 +62,11 @@ const ValidWrapper = (props: any) => {
 	}, []);
 
 	React.useEffect(() => {
-		if (isInitialized && isValid) {
+		if (isInitialized && isApiReady) {
 			Signature.log();
 			SignatureMoaui.log();
 		}
-	}, [isInitialized, isValid]);
+	}, [isInitialized, isApiReady]);
 
 	React.useEffect(() => {
 		if (window.location.pathname === "/") window.location.pathname = "/en";
@@ -82,7 +76,7 @@ const ValidWrapper = (props: any) => {
 
 	return (
 		<>
-			{isInitialized && isValid && (
+			{isInitialized && isApiReady && (
 				<RecoilRoot>
 					<SnackbarProvider
 						maxSnack={3}
@@ -113,13 +107,13 @@ const ValidWrapper = (props: any) => {
 				</RecoilRoot>
 			)}
 
-			{isInitialized && !isValid && (
+			{isInitialized && !isApiReady && (
 				<GuideBox width="100%" height="100vh" center>
 					<Panel variant="shadow2" padding={3} margin={3}>
 						<GuideBox opacity={0.9} spacing={2}>
 							<Typography variant="h1">Validation Check</Typography>
 							<GuideBox spacing={2}>
-								<ValidationComponent title="pyscript" checkIf={isIntalledPyscript} strValid="Installed" strInvalid={`Not Installed`} />
+								<ValidationComponent title="API" checkIf={isApiReady} strValid="Valid" strInvalid="Not connected" />
 								<ValidationComponent title="Base URI" checkIf={checkUri} strValid="Valid" strInvalid="Invalid" />
 								<ValidationComponent title="MAPI-Key" checkIf={checkMapiKey} strValid="Valid" strInvalid={`Invalid (${checkMapiKeyMsg})`} />
 							</GuideBox>
@@ -131,5 +125,21 @@ const ValidWrapper = (props: any) => {
 	);
 };
 
-//변경
-export default ValidWrapper;
+/** Mount 시 GET /api/health 호출, 성공 시 로딩 화면 숨기고 isApiReady 전달. */
+function ApiWrapper() {
+	const [isApiReady, setApiReady] = useState(false);
+	useEffect(() => {
+		getHealth()
+			.then(() => {
+				window.hideLoadingScreen?.();
+				setApiReady(true);
+			})
+			.catch(() => {
+				window.hideLoadingScreen?.();
+				setApiReady(false);
+			});
+	}, []);
+	return <ValidWrapper isApiReady={isApiReady} />;
+}
+
+export default ApiWrapper;

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,10 +8,6 @@
   <meta name="description" content="Web site created using cra-template-moaui" />
   <link rel="icon" href="./favicon.ico" />
   <link rel="stylesheet" href="./index.css" />
-
-  <!-- PYSCRIPT Configuration -->
-  <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
-  <py-config type="json" src="./py_config.json"></py-config>
 
   <style>
     @keyframes spin {
@@ -98,23 +94,9 @@
     }
 
     window.addEventListener('load', () => {
-      updateLoadingStatus("Engine loaded, starting Python...", 40);
+      updateLoadingStatus("Loading application...", 40);
     });
   </script>
-
-  <py-script terminal="false">
-    from py_main import *
-    from py_base import set_g_values, get_g_values
-    import js
-
-    js.updateLoadingStatus("Initializing Python environment...", 50)
-
-    try:
-        main()
-    except Exception as e:
-        js.console.error(f'Python initialization error: {str(e)}')
-        js.updateLoadingStatus(f'Error: {str(e)}', 100)
-  </py-script>
 </body>
 
 </html>

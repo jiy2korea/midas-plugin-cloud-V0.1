@@ -5,12 +5,14 @@
 
 import React, { useState } from 'react';
 import './App.css';
-import { checkPyScriptReady } from './utils_pyscript';
+import { getBeamNeighbors, postCalculate } from './api/endpoints';
 import DetailDialog from './components/DetailDialog';
 import DesignDialog from './components/DesignDialog';
 import SectionList from './components/SectionList';
 import SearchForm from './components/SearchForm';
 import { SectionData, DetailResult, SearchInputs, DesignInputs } from './types';
+
+const API_ERROR_MESSAGE = '연결이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.';
 
 const App = () => {
   // Section List 상태
@@ -27,36 +29,17 @@ const App = () => {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
 
-  // Search Satisfied Section 버튼 핸들러
+  // Search Satisfied Section 버튼 핸들러 (API 호출)
   const handleSearch = async (inputs: SearchInputs) => {
     setLastSearchInputs(inputs);
     const { selectedMember } = inputs;
 
     try {
-      // 1. Python 함수를 호출하여 선택된 부재 주변 5개 부재 리스트 가져오기
-      const neighborBeamsResult = await new Promise<string[]>((resolve, reject) => {
-        checkPyScriptReady(() => {
-          try {
-            const pyFunc = pyscript.interpreter.globals.get('get_neighbor_h_beams');
-            if (pyFunc) {
-              const resultStr = pyFunc(selectedMember);
-              const result = JSON.parse(resultStr);
-              if (result.error) {
-                reject(new Error(result.error));
-              } else {
-                resolve(result);
-              }
-            } else {
-              reject(new Error('Python function get_neighbor_h_beams not found'));
-            }
-          } catch (error) {
-            reject(error);
-          }
-        });
-      });
+      // 1. API로 선택된 부재 주변 부재 리스트 가져오기
+      const neighborBeamsResult = await getBeamNeighbors(selectedMember);
 
-      // 2. Python 함수에 전달할 기본 입력 데이터 준비
-      const basePythonInput = {
+      // 2. 기본 입력 데이터 준비 (pythonInput 구성 유지)
+      const basePythonInput: Record<string, unknown> = {
         rebar_top_count: inputs.rebarTopCount,
         rebar_top_dia: inputs.rebarTopDia,
         rebar_bot_count: inputs.rebarBotCount,
@@ -71,46 +54,23 @@ const App = () => {
         beamSupport: inputs.support === '미사용' ? '0' : '1',
       };
 
-      // 3. 각 부재에 대해 계산 수행
+      // 3. 각 부재에 대해 API 계산 수행
       const sectionDataList: SectionData[] = [];
       const newDetailedResults = new Map<number, DetailResult>();
 
       for (const member of neighborBeamsResult) {
         try {
-          const pythonInput = {
-            ...basePythonInput,
-            selectedMember: member,
-          };
+          const pythonInput = { ...basePythonInput, selectedMember: member };
+          const result = await postCalculate(pythonInput);
 
-          // Python 함수 호출
-          const result = await new Promise<DetailResult>((resolve, reject) => {
-            checkPyScriptReady(() => {
-              try {
-                const pyFunc = pyscript.interpreter.globals.get('calculate_design_strength');
-                if (pyFunc) {
-                  const resultStr = pyFunc(JSON.stringify(pythonInput));
-                  const result = JSON.parse(resultStr);
-                  resolve(result);
-                } else {
-                  reject(new Error('Python function calculate_design_strength not found'));
-                }
-              } catch (error) {
-                reject(error);
-              }
-            });
-          });
-
-          // 에러 체크
           if (result.error) {
             console.error(`부재 ${member} 계산 오류:`, result.error);
             continue;
           }
 
-          // 결과 데이터 구성 및 리스트 추가
           const sectionData = createSectionData(result, member);
           sectionDataList.push(sectionData);
           newDetailedResults.set(sectionDataList.length - 1, result);
-
         } catch (error) {
           console.error(`부재 ${member} 처리 중 오류:`, error);
         }
@@ -118,10 +78,10 @@ const App = () => {
 
       setSectionList(sectionDataList);
       setDetailedResults(newDetailedResults);
-
     } catch (error) {
       console.error('계산 중 오류가 발생했습니다:', error);
-      alert(`계산 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`);
+      const message = error instanceof Error ? error.message : String(error);
+      alert(message.includes('연결') || message.includes('시간') ? message : API_ERROR_MESSAGE);
     }
   };
 
@@ -190,7 +150,7 @@ const App = () => {
       // 선택된 부재의 이름을 가져오거나 없으면 Custom으로 표시
       const member = sectionList[selectedSectionIndex].section.split('\n')[0];
 
-      const pythonInput = {
+      const pythonInput: Record<string, unknown> = {
         ...lastSearchInputs,
         rebar_top_count: lastSearchInputs.rebarTopCount,
         rebar_top_dia: lastSearchInputs.rebarTopDia,
@@ -205,26 +165,10 @@ const App = () => {
         slabDs: lastSearchInputs.slabDs,
         beamSupport: lastSearchInputs.support === '미사용' ? '0' : '1',
         selectedMember: member,
-        ...designInputs // 커스텀 치수
+        ...designInputs,
       };
 
-      // Python 함수 호출
-      const result = await new Promise<DetailResult>((resolve, reject) => {
-        checkPyScriptReady(() => {
-          try {
-            const pyFunc = pyscript.interpreter.globals.get('calculate_design_strength');
-            if (pyFunc) {
-              const resultStr = pyFunc(JSON.stringify(pythonInput));
-              const result = JSON.parse(resultStr);
-              resolve(result);
-            } else {
-              reject(new Error('Python function calculate_design_strength not found'));
-            }
-          } catch (error) {
-            reject(error);
-          }
-        });
-      });
+      const result = await postCalculate(pythonInput as Record<string, unknown> & { selectedMember: string });
 
       if (result.error) {
         alert(`계산 오류: ${result.error}`);
@@ -253,7 +197,8 @@ const App = () => {
 
     } catch (error) {
       console.error('커스텀 계산 중 오류:', error);
-      alert('계산 중 오류가 발생했습니다.');
+      const message = error instanceof Error ? error.message : String(error);
+      alert(message.includes('연결') || message.includes('시간') ? message : API_ERROR_MESSAGE);
     }
   };
 

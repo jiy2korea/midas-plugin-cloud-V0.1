@@ -3,7 +3,10 @@ BESTO Design Cloud API 라우트.
 /api/calculate, /api/beam-info, /api/beam-neighbors, /api/health
 """
 import json
+import logging
 from fastapi import APIRouter, HTTPException, Query
+
+logger = logging.getLogger(__name__)
 
 from library.py_main import get_beam_info as lib_get_beam_info
 from library.py_main import get_neighbor_h_beams
@@ -59,5 +62,6 @@ def post_calculate(body: dict):
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
+        logger.exception("POST /api/calculate 내부 오류")
         raise HTTPException(status_code=500, detail="서버 내부 오류가 발생했습니다.")
 
